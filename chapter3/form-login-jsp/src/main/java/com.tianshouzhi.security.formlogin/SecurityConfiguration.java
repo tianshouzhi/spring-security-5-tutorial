@@ -43,7 +43,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				// 访问index.html不要权限验证
                 .antMatchers("/index.html").permitAll()
 				// 其他所有路径都需要权限校验 ，顺序很重要，第一次匹配上的即通过
-			    .antMatchers("/privilege.html").hasAuthority("ROLE_ADMIN")
+			    .antMatchers("/privilege.html").hasRole("ADMIN")
 				.anyRequest().authenticated()
 				.and()
 				// 配置表单登录
