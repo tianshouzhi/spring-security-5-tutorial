@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
@@ -18,7 +19,7 @@ import javax.sql.DataSource;
 /**
  * Created by tianshouzhi on 2017/12/18.
  */
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @Import(DatabaseConfig.class)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -51,8 +52,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .passwordEncoder(encoder)
                     //5、根据用户名查询用户权限的sql,默认为JdbcDaoImpl.DEF_AUTHORITIES_BY_USERNAME_QUERY
                     .authoritiesByUsernameQuery(JdbcDaoImpl.DEF_AUTHORITIES_BY_USERNAME_QUERY)
-                    //6、角色的前缀，默认为空字符串""
-                    .rolePrefix("ROLE_")
+                    //6、角色的前缀，默认为空字符串""，如果数据库中的角色已经包含了"ROLE_"前缀，则这里不需要指定，否则需要加上ROLE_前缀
+                    .rolePrefix("")
 
                      .passwordEncoder(encoder)
                      //9、用户信息缓存，避免每次都查询数据库，默认为NullUserCache
@@ -60,19 +61,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .anyRequest().authenticated()
-                .antMatchers("/users/**").hasAuthority("ROLE_USER")
-                .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .and()
-                  .csrf().disable()
-                .formLogin()
-                    .loginProcessingUrl("/login")
-                    .passwordParameter("password")
-                    .usernameParameter("username")
-                    .permitAll();
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+                .antMatchers("/bower_components/**");
+    }
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/index.html").permitAll()
+                .antMatchers("/privilege.html").hasRole("USER")
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login.jsp")
+                .loginProcessingUrl("/login")
+                .passwordParameter("password")
+                .usernameParameter("username")
+                .defaultSuccessUrl("/index.html")
+                .permitAll();
     }
 }

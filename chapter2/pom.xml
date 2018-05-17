@@ -18,6 +18,7 @@
         <module>quickstart-springmvc-java</module>
         <module>quickstart-web-security</module>
         <module>quickstart-http-security</module>
+        <module>quickstart-sprintboot</module>
     </modules>
 
 

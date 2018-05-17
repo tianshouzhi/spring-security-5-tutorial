@@ -14,7 +14,8 @@ public interface UserMapper {
     @Select("SELECT * FROM user WHERE username=#{username}")
     UserEntity loadUserByUsername(@Param("username") String username);
 
-    @Insert("INSERT INTO user(username,password,age,birthday) VALUES(#{username},#{password},#{age},#{birthday})")
+    @Insert("INSERT INTO user(username,password,age,birthday) " +
+            "VALUES(#{username},#{password},#{age},#{birthday})")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     void insert(UserEntity userEntity);
 }
