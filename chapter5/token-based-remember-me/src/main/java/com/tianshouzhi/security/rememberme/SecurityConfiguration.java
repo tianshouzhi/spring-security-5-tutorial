@@ -25,8 +25,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.password("tianshouzhi123")
 				.roles("USER")
 				.build();
-
-		auth.inMemoryAuthentication().withUser(user);
+		auth.inMemoryAuthentication().withUser(user).passwordEncoder(encoder);
 
 	}
 
@@ -39,13 +38,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+//		super.configure(http);
 		http
 				.authorizeRequests()
 					.anyRequest().authenticated()
 				.and()
 		      		.formLogin()
-		     	 	.loginPage("/login.jsp")
-				 	.permitAll();
-
+					.loginPage("/login.jsp")
+					.loginProcessingUrl("/login")
+					.usernameParameter("username")
+					.passwordParameter("password")
+					.defaultSuccessUrl("/index.html")
+				 	.permitAll()
+				.and()
+					.rememberMe()
+					.key("remember-me");
+//					.rememberMeParameter("remember-me") //1
+//					.rememberMeCookieName("remember-me") //2
+////					.rememberMeCookieDomain(null) //3
+//					.tokenValiditySeconds(1209600) //4
+//					.alwaysRemember(false) //5
+////					.rememberMeServices()
+////				    .userDetailsService()
+////	//				.tokenRepository(new TokenBasedRememberMeServices(key,))
+//				    .useSecureCookie(true)  //6
 	}
 }

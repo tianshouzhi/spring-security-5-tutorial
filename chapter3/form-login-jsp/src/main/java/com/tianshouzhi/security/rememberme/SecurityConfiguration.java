@@ -50,6 +50,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				  // 表单登录页面地址
 		     	 .loginPage("/login.jsp")
 				  // form表单POST请求url提交地址，默认为/login
+				  //一旦自定义登录页面后，一定要提供loginProcessingUrl，参见AbstractAuthenticationFilterConfigurer.updateAuthenticationDefaults
+				//会将登录页面
 		     	 .loginProcessingUrl("/login")
 				  // form表单用户名参数名
 		     	 .passwordParameter("password")
